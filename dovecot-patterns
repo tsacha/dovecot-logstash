@@ -1,0 +1,31 @@
+DOVECOT_KEYVALUE_DATA [\w-]+=[^;]*
+
+DOVECOT_NO_ATTEMPTS no auth attempts in %{INT:dovecot_attempts_sec} secs
+DOVECOT_ATTEMPTS auth failed, %{INT:dovecot_attempts} attempts in %{INT:dovecot_attemps_sec} secs
+
+DOVECOT_AUTH auth: (%{DOVECOT_AUTH_PENDING:dovecot_auth_pending})
+DOVECOT_AUTH_PENDING Warning: auth client %{NUMBER} disconnected with %{NUMBER} pending requests: Connection reset by peer
+
+DOVECOT_IMAP_LOGIN imap-login: (%{DOVECOT_IMAP_LOGIN_LOGIN:dovecot_login}|%{DOVECOT_IMAP_LOGIN_DISCONNECTED:dovecot_disconnected}|%{DOVECOT_IMAP_LOGIN_INACTIVITY:dovecot_login_inactivity}|%{DOVECOT_IMAP_LOGIN_INVALID_COMMANDS:dovecot_invalid_commands}|%{DOVECOT_IMAP_LOGIN_SASL_UNFINISHED:dovecot_sasl_unfinished}|%{DOVECOT_IMAP_LOGIN_ABORTED_LOGIN:dovecot_aborted_login})
+DOVECOT_MANAGESIEVE_LOGIN managesieve-login: (%{DOVECOT_IMAP_LOGIN_LOGIN:dovecot_login}|%{DOVECOT_IMAP_LOGIN_DISCONNECTED:dovecot_disconnected}|%{DOVECOT_IMAP_LOGIN_INACTIVITY:dovecot_login_inactivity}|%{DOVECOT_IMAP_LOGIN_INVALID_COMMANDS:dovecot_invalid_commands}|%{DOVECOT_IMAP_LOGIN_SASL_UNFINISHED:dovecot_sasl_unfinished}|%{DOVECOT_IMAP_LOGIN_ABORTED_LOGIN:dovecot_aborted_login})
+DOVECOT_IMAP_LOGIN_LOGIN Login:
+DOVECOT_IMAP_LOGIN_DISCONNECTED Disconnected \((%{DOVECOT_NO_ATTEMPTS}|%{DOVECOT_ATTEMPTS})\):
+DOVECOT_IMAP_LOGIN_ABORTED_LOGIN Aborted login \((%{DOVECOT_NO_ATTEMPTS}|%{DOVECOT_ATTEMPTS})\):
+DOVECOT_IMAP_LOGIN_INACTIVITY Disconnected: Inactivity \((%{DOVECOT_ATTEMPTS}|%{DOVECOT_NO_ATTEMPTS})\):
+DOVECOT_IMAP_LOGIN_INVALID_COMMANDS Disconnected: Too many invalid commands. \((%{DOVECOT_ATTEMPTS}|%{DOVECOT_NO_ATTEMPTS})\):
+DOVECOT_IMAP_LOGIN_SASL_UNFINISHED Disconnected \(client didn't finish SASL auth, waited %{INT:dovecot_sasl_wait} secs\):
+
+DOVECOT_IMAP imap\(%{DATA:dovecot_user}\): (%{DOVECOT_IMAP_CONNECTION_CLOSED:dovecot_connection_closed}|%{DOVECOT_IMAP_DISCONNECTED:dovecot_disconnected}|%{DOVECOT_IMAP_INCONSISTENT:dovecot_inconsistent}|%{DOVECOT_IMAP_LOGGED_OUT:dovecot_logged_out})
+DOVECOT_MANAGESIEVE managesieve\(%{DATA:dovecot_user}\): (%{DOVECOT_IMAP_CONNECTION_CLOSED:dovecot_connection_closed}|%{DOVECOT_IMAP_DISCONNECTED:dovecot_disconnected}|%{DOVECOT_IMAP_INCONSISTENT:dovecot_inconsistent}|%{DOVECOT_IMAP_LOGGED_OUT:dovecot_logged_out})
+DOVECOT_IMAP_CONNECTION_CLOSED Connection closed( \(.+\))?
+DOVECOT_IMAP_DISCONNECTED Disconnected( for inactivity|: Logged out)
+DOVECOT_IMAP_INCONSISTENT IMAP session state is inconsistent, please relogin.
+DOVECOT_IMAP_LOGGED_OUT Logged out
+
+DOVECOT_LMTP lmtp\((%{INT:dovecot_pid}|%{DATA:dovecot_user})\): (%{DOVECOT_LMTP_CONNECTION:dovecot_connect}|%{DOVECOT_LMTP_DISCONNECTION:dovecot_disconnect}|%{DOVECOT_LMTP_SIEVE:dovecot_sieve})
+DOVECOT_LMTP_CONNECTION Connect from local
+DOVECOT_LMTP_SIEVE %{DATA}: sieve: msgid=<?%{DATA:dovecot_msgid}>?: stored mail into mailbox '%{DATA:dovecot_mailbox}'
+DOVECOT_LMTP_DISCONNECTION Disconnect from local: Successful quit
+
+
+DOVECOT (%{DOVECOT_AUTH:dovecot_process_auth}|%{DOVECOT_IMAP_LOGIN:dovecot_process_imap_login}|%{DOVECOT_MANAGESIEVE_LOGIN:dovecot_process_managesieve_login}|%{DOVECOT_IMAP:dovecot_process_imap}|%{DOVECOT_MANAGESIEVE:dovecot_process_managesieve}|%{DOVECOT_LMTP:dovecot_process_lmtp})( %{DOVECOT_KEYVALUE_DATA:dovecot_keyvalue_data})?
